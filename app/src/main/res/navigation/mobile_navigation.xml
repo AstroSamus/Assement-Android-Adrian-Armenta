@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/itemsMenuFragment">
+
+    <fragment
+        android:id="@+id/itemsMenuFragment"
+        android:name="com.example.codingchallenge.ItemsMenuFragment"
+        android:label="fragment_items_menu"
+        tools:layout="@layout/fragment_items_menu" >
+        <action
+            android:id="@+id/action_itemsMenuFragment_to_createItemsFragment"
+            app:destination="@id/createItemsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createItemsFragment"
+        android:name="com.example.codingchallenge.CreateItemsFragment"
+        android:label="fragment_create_items"
+        tools:layout="@layout/fragment_create_items" >
+        <action
+            android:id="@+id/action_createItemsFragment_to_itemsMenuFragment"
+            app:destination="@id/itemsMenuFragment" />
+    </fragment>
+</navigation>
