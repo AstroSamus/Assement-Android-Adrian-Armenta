@@ -109,7 +109,7 @@
         app:layout_constraintStart_toStartOf="@+id/imageView" />
 
     <RadioGroup
-        android:id="@+id/radioGroup"
+        android:id="@+id/radioGroupColorCode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
@@ -155,7 +155,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:text="@string/choose_color_code"
-        app:layout_constraintBottom_toTopOf="@+id/radioGroup"
-        app:layout_constraintEnd_toEndOf="@+id/radioGroup"
-        app:layout_constraintStart_toStartOf="@+id/radioGroup" />
+        app:layout_constraintBottom_toTopOf="@+id/radioGroupColorCode"
+        app:layout_constraintEnd_toEndOf="@+id/radioGroupColorCode"
+        app:layout_constraintStart_toStartOf="@+id/radioGroupColorCode" />
 </androidx.constraintlayout.widget.ConstraintLayout>
