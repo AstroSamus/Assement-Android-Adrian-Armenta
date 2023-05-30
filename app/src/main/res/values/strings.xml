@@ -2,6 +2,15 @@
     <string name="app_name">Coding Challenge</string>
     <string name="add_icon">Add icon</string>
     <string name="create_new_item_button">Create new item</string>
+    <string name="pick_a_file">Pick a file</string>
+    <string name="preview_of_img">Preview of picked image</string>
+    <string name="button_red">Button red</string>
+    <string name="choose_color_code">Choose color code</string>
+    <string name="write_a_name">Write a name</string>
+    <string name="take_a_picture">Take a picture</string>
+    <string name="confirm">Confirm</string>
+    <string name="delete">Delete</string>
+
 
 
 </resources>
