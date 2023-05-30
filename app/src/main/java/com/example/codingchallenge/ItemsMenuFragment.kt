@@ -5,8 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class ItemsMenuFragment : Fragment() {
+
+    private lateinit var buttonCreateItem: FloatingActionButton
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -18,5 +22,12 @@ class ItemsMenuFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        buttonCreateItem = view.findViewById(R.id.buttonCreateItem)
+
+        buttonCreateItem.setOnClickListener {
+            val action = ItemsMenuFragmentDirections.actionItemsMenuFragmentToCreateItemsFragment()
+            findNavController().navigate(action)
+        }
     }
 }
