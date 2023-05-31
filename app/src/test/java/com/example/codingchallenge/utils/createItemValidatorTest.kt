@@ -1,5 +1,6 @@
 package com.example.codingchallenge.utils
 
+import android.net.Uri
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import java.net.URI
@@ -10,7 +11,7 @@ internal class createItemValidatorTest {
     fun `given an empty name to the validator should return false`() {
         val name = ""
         val colorCode = "#FAFAFA"
-        val image = URI.create("image")
+        val image = Uri.parse("image")
 
         var result = createItemValidator.validate(name, colorCode, image)
 
@@ -21,7 +22,7 @@ internal class createItemValidatorTest {
     fun `given an empty colorCode to the validator should return false`() {
         val name = "Title"
         val colorCode = ""
-        val image = URI.create("image")
+        val image = Uri.parse("image")
 
         var result = createItemValidator.validate(name, colorCode, image)
 
@@ -43,7 +44,7 @@ internal class createItemValidatorTest {
     fun `given name, colorCode and image as not empty to the validator should return true`() {
         val name = "Title"
         val colorCode = "#FAFAFA"
-        val image = URI.create("image")
+        val image = Uri.parse("image")
 
         var result = createItemValidator.validate(name, colorCode, image)
 
@@ -69,7 +70,7 @@ internal class createItemValidatorTest {
     fun `given name, color code and image to the generateErrorMessage should return an empty string`() {
         val name = "Title"
         val colorCode = "#FAFAFA"
-        val image = URI.create("image")
+        val image = Uri.parse("image")
 
         var result = createItemValidator.generateErrorMessage(name, colorCode, image)
 

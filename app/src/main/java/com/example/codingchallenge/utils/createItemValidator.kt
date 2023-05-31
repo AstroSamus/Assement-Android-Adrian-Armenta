@@ -1,6 +1,7 @@
 package com.example.codingchallenge.utils
 
 import android.content.Context
+import android.net.Uri
 import android.widget.Toast
 import androidx.core.content.ContentProviderCompat.requireContext
 import com.example.codingchallenge.R
@@ -15,7 +16,7 @@ object createItemValidator {
 
 
     //Business rules are: name, colorCode or image cannot be empty
-    fun validate(name: String, colorCode: String, image: URI?): Boolean {
+    fun validate(name: String, colorCode: String, image: Uri?): Boolean {
         var isValid = true
 
         if(name.isEmpty()) {
@@ -31,7 +32,7 @@ object createItemValidator {
         return isValid
     }
 
-    fun generateErrorMessage(name: String, colorCode: String, image: URI?): String {
+    fun generateErrorMessage(name: String, colorCode: String, image: Uri?): String {
 
         var errorMessage: String = errorBase
         var isValid = true
