@@ -11,7 +11,7 @@
     <string name="confirm">Confirm</string>
     <string name="delete">Delete</string>
     <string name="app_will_not_work_permissions">App will not work without permissions</string>
-
+    <string name="default_title">Default name</string>
 
 
 </resources>
