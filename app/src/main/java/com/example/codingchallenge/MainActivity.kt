@@ -9,6 +9,8 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
+import com.example.codingchallenge.model.ItemViewModel
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,17 +40,20 @@ class MainActivity : AppCompatActivity() {
         )
         { permissions ->
             // Handle Permission granted/rejected
-            var permissionGranted = true
+            var areAllPermissionsGranted = true
             permissions.entries.forEach {
                 if (it.key in REQUIRED_PERMISSIONS && it.value == false)
-                    permissionGranted = false
+                    areAllPermissionsGranted = false
             }
-            if (!permissionGranted) {
+            if (!areAllPermissionsGranted) {
+                permissionsGranted = false
                 Toast.makeText(
                     baseContext,
                     R.string.app_will_not_work_permissions,
                     Toast.LENGTH_SHORT
                 ).show()
+            } else {
+                permissionsGranted = true
             }
         }
 
