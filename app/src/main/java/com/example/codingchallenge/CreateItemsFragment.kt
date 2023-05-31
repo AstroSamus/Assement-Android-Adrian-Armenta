@@ -1,14 +1,18 @@
 package com.example.codingchallenge
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
 import com.example.codingchallenge.data.Item
 import com.example.codingchallenge.utils.createItemValidator
@@ -27,6 +31,7 @@ class CreateItemsFragment : Fragment(), RadioGroup.OnCheckedChangeListener {
     private lateinit var radioButtonBlue: RadioButton
     private lateinit var radioButtonGreen: RadioButton
     private lateinit var radioButtonYellow: RadioButton
+    private lateinit var buttonPickPreviewImage: ImageButton
 
 
 
@@ -48,9 +53,13 @@ class CreateItemsFragment : Fragment(), RadioGroup.OnCheckedChangeListener {
         radioButtonBlue = view.findViewById(R.id.radioButtonBlue)
         radioButtonGreen = view.findViewById(R.id.radioButtonGreen)
         radioButtonYellow = view.findViewById(R.id.radioButtonYellow)
+        buttonPickPreviewImage = view.findViewById(R.id.buttonPickPreviewImage)
+
+
 
         buttonConfirm.setOnClickListener { onConfirm() }
         radioGroupColorCode.setOnCheckedChangeListener(this)
+        buttonPickPreviewImage.setOnClickListener { onPickImage() }
 
     }
 
@@ -79,4 +88,19 @@ class CreateItemsFragment : Fragment(), RadioGroup.OnCheckedChangeListener {
             radioButtonYellow?.id -> colorCodeSelection = "YELLOW"
         }
     }
+
+    //Beginning of the file picker code
+    private val pickImg = registerForActivityResult(
+        ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        //When user picks an image or closes the file selector this gets executed
+        if (uri != null) {
+            buttonPickPreviewImage.setImageURI(uri)
+        }
+    }
+    private fun onPickImage() {
+        //When button to pick image is pressed, the picker gets displayed
+        pickImg.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    }
+    //End of the file picker code
 }
