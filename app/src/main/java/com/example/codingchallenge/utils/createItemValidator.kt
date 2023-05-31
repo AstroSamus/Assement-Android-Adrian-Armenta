@@ -4,6 +4,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.core.content.ContentProviderCompat.requireContext
 import com.example.codingchallenge.R
+import java.net.URI
 
 object createItemValidator {
 
@@ -14,7 +15,7 @@ object createItemValidator {
 
 
     //Business rules are: name, colorCode or image cannot be empty
-    fun validate(name: String, colorCode: String, image: String): Boolean {
+    fun validate(name: String, colorCode: String, image: URI?): Boolean {
         var isValid = true
 
         if(name.isEmpty()) {
@@ -23,14 +24,14 @@ object createItemValidator {
         if(colorCode.isEmpty()) {
             isValid = false
         }
-        if(image.isEmpty()) {
+        if(image == null) {
             isValid = false
         }
 
         return isValid
     }
 
-    fun generateErrorMessage(name: String, colorCode: String, image: String): String {
+    fun generateErrorMessage(name: String, colorCode: String, image: URI?): String {
 
         var errorMessage: String = errorBase
         var isValid = true
@@ -45,7 +46,7 @@ object createItemValidator {
             isValid = false
         }
 
-        if(image.isEmpty()) {
+        if(image == null) {
             errorMessage = errorMessage.plus(errorImage)
             isValid = false
         }
