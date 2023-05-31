@@ -21,6 +21,8 @@ class MainActivity : AppCompatActivity() {
         //Request permisions
         if (!arePermissionsGranted()) {
             grantPermissionsActivityResult.launch(REQUIRED_PERMISSIONS)
+        } else {
+            permissionsGranted = true
         }
     }
 
@@ -51,6 +53,7 @@ class MainActivity : AppCompatActivity() {
         }
 
     companion object {
+        var permissionsGranted = false
         val REQUIRED_PERMISSIONS = mutableListOf (
                 Manifest.permission.CAMERA,
                 Manifest.permission.RECORD_AUDIO
