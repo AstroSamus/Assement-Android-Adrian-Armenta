@@ -1,6 +1,7 @@
 package com.example.codingchallenge
 
 import android.content.ContentValues
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -23,13 +24,16 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.codingchallenge.MainActivity.Companion.permissionsGranted
 import com.example.codingchallenge.data.AppConstants.FILENAME_FORMAT
 import com.example.codingchallenge.data.AppConstants.TAG
 import com.example.codingchallenge.data.Item
+import com.example.codingchallenge.model.ItemViewModel
 import com.example.codingchallenge.utils.createItemValidator
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.net.URI
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
@@ -38,8 +42,10 @@ import java.util.concurrent.Executors
 
 class CreateItemsFragment : Fragment(), RadioGroup.OnCheckedChangeListener {
 
+    private lateinit var itemViewModel: ItemViewModel
     private var colorCodeSelection = ""
     private var imageCapture: ImageCapture? = null
+    private var selectedImageURI: Uri? = null
     private lateinit var cameraExecutor: ExecutorService
 
 
@@ -64,6 +70,8 @@ class CreateItemsFragment : Fragment(), RadioGroup.OnCheckedChangeListener {
         }
 
         cameraExecutor = Executors.newSingleThreadExecutor()
+
+        itemViewModel = ViewModelProvider(this).get(ItemViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -104,19 +112,15 @@ class CreateItemsFragment : Fragment(), RadioGroup.OnCheckedChangeListener {
 
     private fun onConfirm() {
         val title = inputItemText.text.toString()
-        //Color code selection is set in the onCheckedChanged fun and is hold in the colorCodeSelection
-        //temporary image value
-        val image = "image"
 
-        if(createItemValidator.validate(title, colorCodeSelection, image)) {
-            val newItem = Item(title, colorCodeSelection, image)
+        if(createItemValidator.validate(inputItemText.text.toString(), colorCodeSelection, selectedImageURI)) {
+            val newItem = Item(title, colorCodeSelection, selectedImageURI!!)
+            itemViewModel.addItem(newItem)
+            toItemsMenuFragment()
         } else {
-            val errorText = createItemValidator.generateErrorMessage(title, colorCodeSelection, image)
+            val errorText = createItemValidator.generateErrorMessage(title, colorCodeSelection, selectedImageURI)
             Toast.makeText(context, errorText, Toast.LENGTH_SHORT).show()
         }
-
-        val action = CreateItemsFragmentDirections.actionCreateItemsFragmentToItemsMenuFragment()
-        findNavController().navigate(action)
     }
 
     override fun onCheckedChanged(p0: RadioGroup?, selectedButton: Int) {
@@ -128,13 +132,20 @@ class CreateItemsFragment : Fragment(), RadioGroup.OnCheckedChangeListener {
         }
     }
 
+    fun toItemsMenuFragment() {
+        val action = CreateItemsFragmentDirections.actionCreateItemsFragmentToItemsMenuFragment()
+        findNavController().navigate(action)
+    }
+
+
 //Beginning of the file picker code ----------------------------------------
     private val pickImg = registerForActivityResult(
         ActivityResultContracts.PickVisualMedia()
     ) { uri ->
         //When user picks an image or closes the file selector this gets executed
         if (uri != null) {
-            buttonPickPreviewImage.setImageURI(uri)
+            selectedImageURI = uri
+            buttonPickPreviewImage.setImageURI(selectedImageURI)
         }
     }
     private fun onPickImage() {
@@ -218,7 +229,8 @@ class CreateItemsFragment : Fragment(), RadioGroup.OnCheckedChangeListener {
                 }
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults){
-                    buttonPickPreviewImage.setImageURI(output.savedUri)
+                    selectedImageURI = output.savedUri
+                    buttonPickPreviewImage.setImageURI(selectedImageURI)
                 }
             }
         )
