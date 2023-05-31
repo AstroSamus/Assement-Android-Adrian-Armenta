@@ -16,7 +16,7 @@ object createItemValidator {
 
 
     //Business rules are: name, colorCode or image cannot be empty
-    fun validate(name: String, colorCode: String, image: Uri?): Boolean {
+    fun validate(name: String, colorCode: String, image: String): Boolean {
         var isValid = true
 
         if(name.isEmpty()) {
@@ -25,14 +25,14 @@ object createItemValidator {
         if(colorCode.isEmpty()) {
             isValid = false
         }
-        if(image == null) {
+        if(image.isEmpty()) {
             isValid = false
         }
 
         return isValid
     }
 
-    fun generateErrorMessage(name: String, colorCode: String, image: Uri?): String {
+    fun generateErrorMessage(name: String, colorCode: String, image: String): String {
 
         var errorMessage: String = errorBase
         var isValid = true
@@ -47,7 +47,7 @@ object createItemValidator {
             isValid = false
         }
 
-        if(image == null) {
+        if(image.isEmpty()) {
             errorMessage = errorMessage.plus(errorImage)
             isValid = false
         }

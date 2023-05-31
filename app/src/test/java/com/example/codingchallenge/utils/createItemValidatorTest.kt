@@ -11,7 +11,7 @@ internal class createItemValidatorTest {
     fun `given an empty name to the validator should return false`() {
         val name = ""
         val colorCode = "#FAFAFA"
-        val image = Uri.parse("image")
+        val image = "image"
 
         var result = createItemValidator.validate(name, colorCode, image)
 
@@ -22,7 +22,7 @@ internal class createItemValidatorTest {
     fun `given an empty colorCode to the validator should return false`() {
         val name = "Title"
         val colorCode = ""
-        val image = Uri.parse("image")
+        val image = "image"
 
         var result = createItemValidator.validate(name, colorCode, image)
 
@@ -33,7 +33,7 @@ internal class createItemValidatorTest {
     fun `given an empty image to the validator should return false`() {
         val name = "Title"
         val colorCode = "#FAFAFA"
-        val image = null
+        val image = ""
 
         var result = createItemValidator.validate(name, colorCode, image)
 
@@ -44,7 +44,7 @@ internal class createItemValidatorTest {
     fun `given name, colorCode and image as not empty to the validator should return true`() {
         val name = "Title"
         val colorCode = "#FAFAFA"
-        val image = Uri.parse("image")
+        val image = "image"
 
         var result = createItemValidator.validate(name, colorCode, image)
 
@@ -57,7 +57,7 @@ internal class createItemValidatorTest {
     fun `given empty name, color code and image to the generateErrorMessage, should return the corresponding error text`() {
         val name = ""
         val colorCode = ""
-        val image = null
+        val image = ""
 
         var result = createItemValidator.generateErrorMessage(name, colorCode, image)
 
@@ -70,7 +70,7 @@ internal class createItemValidatorTest {
     fun `given name, color code and image to the generateErrorMessage should return an empty string`() {
         val name = "Title"
         val colorCode = "#FAFAFA"
-        val image = Uri.parse("image")
+        val image = "image"
 
         var result = createItemValidator.generateErrorMessage(name, colorCode, image)
 
