@@ -1,20 +1,17 @@
 package com.example.codingchallenge
 
 import android.content.ContentValues
+import android.content.Context
+import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.RadioButton
-import android.widget.RadioGroup
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
@@ -29,11 +26,13 @@ import androidx.navigation.fragment.findNavController
 import com.example.codingchallenge.MainActivity.Companion.permissionsGranted
 import com.example.codingchallenge.data.AppConstants.FILENAME_FORMAT
 import com.example.codingchallenge.data.AppConstants.TAG
-import com.example.codingchallenge.data.Item
+import com.example.codingchallenge.database.Item
+import com.example.codingchallenge.database.ItemDatabase
 import com.example.codingchallenge.model.ItemViewModel
+import com.example.codingchallenge.utils.CoroutineFragment
 import com.example.codingchallenge.utils.createItemValidator
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import java.net.URI
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
@@ -41,9 +40,11 @@ import java.util.concurrent.Executors
 
 
 class CreateItemsFragment : CoroutineFragment(), RadioGroup.OnCheckedChangeListener {
+    private var item: Item? = null
+    private var isInUpdateMode = false
 
     private lateinit var itemViewModel: ItemViewModel
-    private var colorCodeSelection = ""
+    var colorCodeSelection = ""
     private var imageCapture: ImageCapture? = null
     private var selectedImageURI: Uri? = null
     private lateinit var cameraExecutor: ExecutorService
@@ -98,10 +99,23 @@ class CreateItemsFragment : CoroutineFragment(), RadioGroup.OnCheckedChangeListe
 
 
 
-        buttonConfirm.setOnClickListener { onConfirm() }
+
+        buttonConfirm.setOnClickListener { launch { onConfirm() }}
         radioGroupColorCode.setOnCheckedChangeListener(this)
         buttonPickPreviewImage.setOnClickListener { onPickImage() }
         buttonTakePicture.setOnClickListener{ takePicture() }
+        //This line of text should be executed after the inputItemText has been setted from the view
+        arguments?.let{
+            item = CreateItemsFragmentArgs.fromBundle(it).itemToEdit
+            if(item!=null) {
+                //If itemToEdit comes full of data then we should update an existing note instead of adding
+                isInUpdateMode = true
+                inputItemText.setText(item?.name)
+                setActiveColorRadioButton(item?.colorCode)
+                val uri = Uri.parse(item?.image)
+                buttonPickPreviewImage.setImageURI(uri)
+            }
+        }
 
     }
 
@@ -110,15 +124,31 @@ class CreateItemsFragment : CoroutineFragment(), RadioGroup.OnCheckedChangeListe
         cameraExecutor.shutdown()
     }
 
-    private fun onConfirm() {
+    private suspend fun onConfirm() {
         val title = inputItemText.text.toString()
+        var image = ""
 
-        if(createItemValidator.validate(inputItemText.text.toString(), colorCodeSelection, selectedImageURI)) {
-            val newItem = Item(title, colorCodeSelection, selectedImageURI!!)
-            itemViewModel.addItem(newItem)
+        if(selectedImageURI != null) {
+            image = "String of uri, this feature is pending"
+        }
+
+        //Add or update the note created
+        if(createItemValidator.validate(title, colorCodeSelection, image)) {
+            val newItem = Item(title, colorCodeSelection, image)
+            context.let {
+                if(isInUpdateMode) {
+                    updateItem(newItem)
+                }
+                else  {
+                    saveItem(newItem)
+                }
+            }
+            //Return the user to the itemsMenuFragment
             toItemsMenuFragment()
-        } else {
-            val errorText = createItemValidator.generateErrorMessage(title, colorCodeSelection, selectedImageURI)
+        }
+        //if it's not possible to create or edit a note, then display an error message
+        else {
+            val errorText = createItemValidator.generateErrorMessage(title, colorCodeSelection, image)
             Toast.makeText(context, errorText, Toast.LENGTH_SHORT).show()
         }
     }
@@ -238,7 +268,7 @@ class CreateItemsFragment : CoroutineFragment(), RadioGroup.OnCheckedChangeListe
                 }
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults){
-                    selectedImageURI = output.savedUri
+                    selectedImageURI = output?.savedUri
                     buttonPickPreviewImage.setImageURI(selectedImageURI)
                 }
             }
@@ -247,4 +277,20 @@ class CreateItemsFragment : CoroutineFragment(), RadioGroup.OnCheckedChangeListe
 
 //End of the camera code -------------------------------------------------------------------
 
+
+//Beginning of code for the DB--------------------------------------------------------------
+    private suspend fun saveItem(item: Item) {
+        context?.let {
+            ItemDatabase(it).getItemDao().addItem(item)
+        }
+    }
+
+    private suspend fun updateItem(itemForUpdate: Item) {
+        //Set the id from the item that comes from the items menu
+        itemForUpdate.id = item!!.id
+        context?.let {
+            ItemDatabase(it).getItemDao().updateItem(itemForUpdate)
+        }
+    }
+//End of the code for the DB
 }
