@@ -10,6 +10,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.codingchallenge.ItemsMenuFragmentDirections
 import com.example.codingchallenge.R
 import com.example.codingchallenge.database.Item
@@ -33,8 +35,13 @@ class ItemElementAdapter (
     override fun onBindViewHolder(holder: ItemElementViewHolder, position: Int) {
         holder.itemElementName.text = dataset[position].name
         holder.itemElementColorCode.setBackgroundColor(dataset[position].safeColorCode)
-        val uri = Uri.parse(dataset[position].image)
-        holder.itemElementImage.setImageURI(uri)
+        //val uri = Uri.parse(dataset[position].image)
+        holder.itemElementImage?.let{
+            Glide.with(it)
+                .load(dataset[position].image)
+                .into(it)
+        }
+
         holder.view.setOnClickListener {
             val action = ItemsMenuFragmentDirections.actionItemsMenuFragmentToCreateItemsFragment(dataset[position])
             Navigation .findNavController(it).navigate(action)

@@ -3,6 +3,7 @@ package com.example.codingchallenge
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -20,9 +21,12 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.codingchallenge.MainActivity.Companion.permissionsGranted
 import com.example.codingchallenge.data.AppConstants.FILENAME_FORMAT
 import com.example.codingchallenge.data.AppConstants.TAG
@@ -115,9 +119,12 @@ class CreateItemsFragment : CoroutineFragment(), RadioGroup.OnCheckedChangeListe
                 //If itemToEdit comes full of data then we should update an existing note instead of adding
                 isInUpdateOrDeleteMode = true
                 inputItemText.setText(item?.name)
+                //WET programming, if we use this code block once again we pass it into a reusable function
                 setActiveColorRadioButton(item?.colorCode)
-                val uri = Uri.parse(item?.image)
-                buttonPickPreviewImage.setImageURI(uri)
+                Glide.with(buttonPickPreviewImage)
+                    .load(item?.image)
+                    .into(buttonPickPreviewImage)
+                selectedImageURI = Uri.parse(item?.image)
             }
         }
 
@@ -142,7 +149,7 @@ class CreateItemsFragment : CoroutineFragment(), RadioGroup.OnCheckedChangeListe
         var image = ""
 
         if(selectedImageURI != null) {
-            image = "String of uri, this feature is pending"
+            image = selectedImageURI.toString()
         }
 
         //Add or update the note created
