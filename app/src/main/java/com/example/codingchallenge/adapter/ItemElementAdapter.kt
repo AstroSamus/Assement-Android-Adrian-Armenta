@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
+import com.example.codingchallenge.ItemsMenuFragmentDirections
 import com.example.codingchallenge.R
 import com.example.codingchallenge.database.Item
 
@@ -33,9 +35,13 @@ class ItemElementAdapter (
         holder.itemElementColorCode.setBackgroundColor(dataset[position].safeColorCode)
         val uri = Uri.parse(dataset[position].image)
         holder.itemElementImage.setImageURI(uri)
+        holder.view.setOnClickListener {
+            val action = ItemsMenuFragmentDirections.actionItemsMenuFragmentToCreateItemsFragment(dataset[position])
+            Navigation .findNavController(it).navigate(action)
+        }
     }
 
-    class ItemElementViewHolder(private val view: View): RecyclerView.ViewHolder(view) {
+    class ItemElementViewHolder( val view: View): RecyclerView.ViewHolder(view) {
         val itemElementName: TextView = view.findViewById(R.id.itemElementName)
         val itemElementColorCode: LinearLayout = view.findViewById(R.id.itemElementCard)
         val itemElementImage: ImageView = view.findViewById(R.id.itemElementImage)
