@@ -40,7 +40,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 
-class CreateItemsFragment : Fragment(), RadioGroup.OnCheckedChangeListener {
+class CreateItemsFragment : CoroutineFragment(), RadioGroup.OnCheckedChangeListener {
 
     private lateinit var itemViewModel: ItemViewModel
     private var colorCodeSelection = ""
@@ -129,6 +129,15 @@ class CreateItemsFragment : Fragment(), RadioGroup.OnCheckedChangeListener {
             radioButtonBlue?.id -> colorCodeSelection = "BLUE"
             radioButtonGreen?.id -> colorCodeSelection = "GREEN"
             radioButtonYellow?.id -> colorCodeSelection = "YELLOW"
+        }
+    }
+
+    private fun setActiveColorRadioButton(color: String? = "GREEN") {
+        when(color) {
+            "RED" ->  radioButtonRed.isChecked = true
+            "BLUE" -> radioButtonBlue.isChecked = true
+            "YELLOW" -> radioButtonYellow.isChecked = true
+            else -> radioButtonGreen.isChecked = true
         }
     }
 
