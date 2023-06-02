@@ -120,6 +120,7 @@ class CreateItemsFragment : CoroutineFragment(), RadioGroup.OnCheckedChangeListe
                 setActiveColorRadioButton(item?.colorCode)
                 Glide.with(buttonPickPreviewImage)
                     .load(item?.image)
+                    .error(R.drawable.ic_delete)
                     .into(buttonPickPreviewImage)
                 selectedImageURI = Uri.parse(item?.image)
             }

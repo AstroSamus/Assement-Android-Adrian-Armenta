@@ -39,6 +39,7 @@ class ItemElementAdapter (
         holder.itemElementImage?.let{
             Glide.with(it)
                 .load(dataset[position].image)
+                .error(R.drawable.ic_delete)
                 .into(it)
         }
 
