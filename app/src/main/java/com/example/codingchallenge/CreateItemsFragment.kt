@@ -32,7 +32,6 @@ import com.example.codingchallenge.data.AppConstants.FILENAME_FORMAT
 import com.example.codingchallenge.data.AppConstants.TAG
 import com.example.codingchallenge.database.Item
 import com.example.codingchallenge.database.ItemDatabase
-import com.example.codingchallenge.model.ItemViewModel
 import com.example.codingchallenge.utils.CoroutineFragment
 import com.example.codingchallenge.utils.createItemValidator
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -47,7 +46,6 @@ class CreateItemsFragment : CoroutineFragment(), RadioGroup.OnCheckedChangeListe
     private var item: Item? = null
     private var isInUpdateOrDeleteMode = false
 
-    private lateinit var itemViewModel: ItemViewModel
     var colorCodeSelection = ""
     private var imageCapture: ImageCapture? = null
     private var selectedImageURI: Uri? = null
@@ -78,7 +76,6 @@ class CreateItemsFragment : CoroutineFragment(), RadioGroup.OnCheckedChangeListe
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 
-        itemViewModel = ViewModelProvider(this).get(ItemViewModel::class.java)
     }
 
     override fun onCreateView(
