@@ -1,20 +1,17 @@
 package com.example.codingchallenge.database
 
-import android.content.Context
 import android.graphics.Color
-import android.net.Uri
-import androidx.core.content.ContextCompat
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.codingchallenge.R
-import java.net.URI
-import java.util.*
+
 @Entity
 data class Item(
     var name: String,
     var colorCode: String,
     var image: String,
-) {
+): Parcelable {
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
 
@@ -28,4 +25,33 @@ data class Item(
                 Color.GREEN
             }
         }
+    constructor(parcel: Parcel) : this(
+        parcel.readString().toString(),
+        parcel.readString().toString(),
+        parcel.readString().toString()
+    ) {
+        id = parcel.readInt()
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(name)
+        parcel.writeString(colorCode)
+        parcel.writeString(image)
+        parcel.writeInt(id)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Item> {
+        override fun createFromParcel(parcel: Parcel): Item {
+            return Item(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Item?> {
+            return arrayOfNulls(size)
+        }
+    }
+
 }

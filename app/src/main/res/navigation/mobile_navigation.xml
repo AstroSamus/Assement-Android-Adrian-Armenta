@@ -22,5 +22,9 @@
         <action
             android:id="@+id/action_createItemsFragment_to_itemsMenuFragment"
             app:destination="@id/itemsMenuFragment" />
+        <argument android:name="itemToEdit"
+            app:nullable="true"
+            android:defaultValue="@null"
+            app:argType="com.example.codingchallenge.database.Item" />
     </fragment>
 </navigation>
