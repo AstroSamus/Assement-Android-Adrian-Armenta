@@ -41,7 +41,7 @@ import java.util.concurrent.Executors
 
 class CreateItemsFragment : CoroutineFragment(), RadioGroup.OnCheckedChangeListener {
     private var item: Item? = null
-    private var isInUpdateMode = false
+    private var isInUpdateOrDeleteMode = false
 
     private lateinit var itemViewModel: ItemViewModel
     var colorCodeSelection = ""
@@ -61,6 +61,8 @@ class CreateItemsFragment : CoroutineFragment(), RadioGroup.OnCheckedChangeListe
     private lateinit var buttonPickPreviewImage: ImageButton
     private lateinit var createItemsViewFinder: PreviewView
     private lateinit var buttonTakePicture: FloatingActionButton
+    private lateinit var buttonDelete: FloatingActionButton
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,11 +98,13 @@ class CreateItemsFragment : CoroutineFragment(), RadioGroup.OnCheckedChangeListe
         buttonPickPreviewImage = view.findViewById(R.id.buttonPickPreviewImage)
         createItemsViewFinder = view.findViewById(R.id.createItemsViewFinder)
         buttonTakePicture = view.findViewById(R.id.buttonTakePicture)
+        buttonDelete = view.findViewById(R.id.buttonDelete)
 
 
 
 
         buttonConfirm.setOnClickListener { launch { onConfirm() }}
+        buttonDelete.setOnClickListener { launch { onDelete() }}
         radioGroupColorCode.setOnCheckedChangeListener(this)
         buttonPickPreviewImage.setOnClickListener { onPickImage() }
         buttonTakePicture.setOnClickListener{ takePicture() }
@@ -109,7 +113,7 @@ class CreateItemsFragment : CoroutineFragment(), RadioGroup.OnCheckedChangeListe
             item = CreateItemsFragmentArgs.fromBundle(it).itemToEdit
             if(item!=null) {
                 //If itemToEdit comes full of data then we should update an existing note instead of adding
-                isInUpdateMode = true
+                isInUpdateOrDeleteMode = true
                 inputItemText.setText(item?.name)
                 setActiveColorRadioButton(item?.colorCode)
                 val uri = Uri.parse(item?.image)
@@ -124,6 +128,15 @@ class CreateItemsFragment : CoroutineFragment(), RadioGroup.OnCheckedChangeListe
         cameraExecutor.shutdown()
     }
 
+    private suspend fun onDelete() {
+        if(isInUpdateOrDeleteMode) {
+            context.let {
+                deleteItem(item!!)
+            }
+        }
+        toItemsMenuFragment()
+    }
+
     private suspend fun onConfirm() {
         val title = inputItemText.text.toString()
         var image = ""
@@ -136,7 +149,7 @@ class CreateItemsFragment : CoroutineFragment(), RadioGroup.OnCheckedChangeListe
         if(createItemValidator.validate(title, colorCodeSelection, image)) {
             val newItem = Item(title, colorCodeSelection, image)
             context.let {
-                if(isInUpdateMode) {
+                if(isInUpdateOrDeleteMode) {
                     updateItem(newItem)
                 }
                 else  {
@@ -290,6 +303,13 @@ class CreateItemsFragment : CoroutineFragment(), RadioGroup.OnCheckedChangeListe
         itemForUpdate.id = item!!.id
         context?.let {
             ItemDatabase(it).getItemDao().updateItem(itemForUpdate)
+        }
+    }
+
+    private suspend fun deleteItem(itemForDelete: Item) {
+        itemForDelete.id = item!!.id
+        context?.let {
+            ItemDatabase(it).getItemDao().deleteItem(itemForDelete)
         }
     }
 //End of the code for the DB
